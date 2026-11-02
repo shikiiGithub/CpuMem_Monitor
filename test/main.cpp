@@ -1,4 +1,5 @@
-﻿#include "../cpumem_monitor.h"
+﻿#include "../cpumem_fetch.h"
+#include "../cpumem_monitor.h"
 #include <assert.h>
 #include <chrono>
 #include <iomanip>
@@ -6,7 +7,6 @@
 #include <string>
 #include <thread>
 #include <vector>
-
 using namespace std::chrono_literals;
 
 int main(int argc, char *argv[]) {
@@ -22,26 +22,13 @@ int main(int argc, char *argv[]) {
       auto memusage = mon.getMemoryUsage();
       auto cpuusage = mon.getCPUUsage();
       std::cout << "Total CPU Usage: " << cpuusage.TotalUse << std::endl;
-      std::cout << "Total CPU Process Usage: " << cpuusage.ProcessUse
-                << std::endl;
-      std::cout << "Physical Process Memory Usage: "
-                << SL::NET::to_PrettyBytes(memusage.PhysicalProcessUsed)
-                << std::endl;
-      std::cout << "Total Physical Process Memory Available: "
-                << SL::NET::to_PrettyBytes(memusage.PhysicalTotalAvailable)
-                << std::endl;
-      std::cout << "Total Physical Memory Usage: "
+      std::cout << "Total Physical  Memory Usage: "
                 << SL::NET::to_PrettyBytes(memusage.PhysicalTotalUsed)
                 << std::endl;
-      std::cout << "Virtual Process Memory Usage: "
-                << SL::NET::to_PrettyBytes(memusage.VirtualProcessUsed)
+      std::cout << "Total Physical Memory : "
+                << SL::NET::to_PrettyBytes(memusage.PhysicalTotalAvailable)
                 << std::endl;
-      std::cout << "Total Virtual Process Memory Usage: "
-                << SL::NET::to_PrettyBytes(memusage.VirtualTotalAvailable)
-                << std::endl;
-      std::cout << "Total Virtual Process Memory Usage: "
-                << SL::NET::to_PrettyBytes(memusage.VirtualTotalUsed)
-                << std::endl;
+      std::cout << "mem usage:" << GetMemUsage() << std::endl;
 
       std::this_thread::sleep_for(1s);
       if (counter == 5) {

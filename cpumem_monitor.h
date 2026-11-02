@@ -1,5 +1,6 @@
 #pragma once
 #include <iomanip>
+#include <iostream>
 #include <math.h>
 #include <sstream>
 #include <string.h>
@@ -277,11 +278,37 @@ public:
     c.ProcessUse = percent;
     return c;
   }
+#if __linux__
+  /* 从 /proc/meminfo 中读取指定字段的值（单位：kB） */
+  static unsigned long long read_meminfo_field(const char *path,
+                                               const char *key) {
+    FILE *fp = fopen(path, "r");
+    if (!fp) {
+      perror("fopen /proc/meminfo");
+      return 0;
+    }
+
+    char line[256];
+    unsigned long long value = 0;
+    size_t key_len = strlen(key);
+
+    while (fgets(line, sizeof(line), fp)) {
+      /* 每行格式类似: "MemTotal:       16384000 kB" */
+      if (strncmp(line, key, key_len) == 0 && line[key_len] == ':') {
+        /* 跳过 "key:" 部分，读取数值 */
+        sscanf(line + key_len + 1, "%llu", &value);
+        break;
+      }
+    }
+
+    fclose(fp);
+    return value; /* 单位: kB */
+  }
+#endif
   MemoryUse getMemoryUsage() {
 
     struct sysinfo memInfo;
     sysinfo(&memInfo);
-
     long long int totalPhysMem = memInfo.totalram;
     // Multiply in next statement to avoid int overflow on right hand side...
     totalPhysMem *= memInfo.mem_unit;
@@ -290,25 +317,40 @@ public:
     // Multiply in next statement to avoid int overflow on right hand side...
     physMemUsed *= memInfo.mem_unit;
     MemoryUse m;
+
     m.PhysicalTotalUsed = physMemUsed;
     m.PhysicalTotalAvailable = totalPhysMem;
     m.PhysicalProcessUsed = 0;
 
-    long long int totalVirtualMem = memInfo.totalram;
-    // Add other values in next statement to avoid int overflow on right hand
-    // side...
-    totalVirtualMem += memInfo.totalswap;
-    totalVirtualMem *= memInfo.mem_unit;
+#if __linux__
+    const char *path = "/proc/meminfo";
+    unsigned long long mem_total = read_meminfo_field(path, "MemTotal");
+    unsigned long long mem_free = read_meminfo_field(path, "MemFree");
+    unsigned long long mem_available = read_meminfo_field(path, "MemAvailable");
+    unsigned long long buffers = read_meminfo_field(path, "Buffers");
+    unsigned long long cached = read_meminfo_field(path, "Cached");
+    unsigned long long sreclaimable = read_meminfo_field(path, "SReclaimable");
+    unsigned long long shmem = read_meminfo_field(path, "Shmem");
+    m.PhysicalTotalAvailable = mem_total * 1024;
+    m.PhysicalTotalUsed = (mem_total - mem_available) * 1024;
 
-    long long int virtualMemUsed = memInfo.totalram - memInfo.freeram;
-    // Add other values in next statement to avoid int overflow on right hand
-    // side...
-    virtualMemUsed += memInfo.totalswap - memInfo.freeswap;
-    virtualMemUsed *= memInfo.mem_unit;
+#endif
 
-    m.VirtualTotalAvailable = totalVirtualMem;
-    m.VirtualTotalUsed = virtualMemUsed;
-    m.VirtualProcessUsed = 0;
+    // long long int totalVirtualMem = memInfo.totalram;
+    // // Add other values in next statement to avoid int overflow on right hand
+    // // side...
+    // totalVirtualMem += memInfo.totalswap;
+    // totalVirtualMem *= memInfo.mem_unit;
+    //
+    // long long int virtualMemUsed = memInfo.totalram - memInfo.freeram;
+    // // Add other values in next statement to avoid int overflow on right hand
+    // // side...
+    // virtualMemUsed += memInfo.totalswap - memInfo.freeswap;
+    // virtualMemUsed *= memInfo.mem_unit;
+    //
+    // m.VirtualTotalAvailable = totalVirtualMem;
+    // m.VirtualTotalUsed = virtualMemUsed;
+    // m.VirtualProcessUsed = 0;
     getprocessmemory(m);
     return m;
   }
