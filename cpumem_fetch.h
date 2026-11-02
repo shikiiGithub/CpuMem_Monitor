@@ -21,11 +21,6 @@
 #endif
 
 #include <assert.h>
-#include <chrono>
-#include <iomanip>
-#include <iostream>
-#include <string>
-#include <vector>
 extern "C" {
 
 LIBX_EXPORT double GetCPUUsage();
