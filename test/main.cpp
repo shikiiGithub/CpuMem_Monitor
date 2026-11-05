@@ -1,5 +1,4 @@
-﻿#include "../cpumem_fetch.h"
-#include "../cpumem_monitor.h"
+﻿#include "../cpumem_monitor.h"
 #include <assert.h>
 #include <chrono>
 #include <iomanip>
@@ -28,7 +27,6 @@ int main(int argc, char *argv[]) {
       std::cout << "Total Physical Memory : "
                 << SL::NET::to_PrettyBytes(memusage.PhysicalTotalAvailable)
                 << std::endl;
-      std::cout << "mem usage:" << GetMemUsage() << std::endl;
 
       std::this_thread::sleep_for(1s);
       if (counter == 5) {
