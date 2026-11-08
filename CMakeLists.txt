@@ -13,7 +13,7 @@ else()
 endif()
 
 add_library(${PROJECT_NAME} SHARED cpumem_monitor.h cpumem_monitor.cpp cpumem_fetch.cpp luaCPUMem.cpp )
-# add_executable(${forWezterm} cpumem_monitor.h cpumem_monitor.cpp cpumem_fetch.cpp main.cpp luaCPUMem.cpp)
+add_executable(${forWezterm} cpumem_monitor.h cpumem_monitor.cpp cpumem_fetch.cpp main.cpp )
 # 根据平台定义宏
 if (WIN32)
     target_compile_definitions(${PROJECT_NAME} PRIVATE LIBX_EXPORTS)

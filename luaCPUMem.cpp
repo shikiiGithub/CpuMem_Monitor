@@ -2,6 +2,7 @@
 #include "./cpumem_fetch.h" // 包含你原有的导出函数声明
 extern "C" {
 #include "/home/shikii/下载/lua-5.4.1/lauxlib.h"
+#include "/home/shikii/下载/lua-5.4.1/lua.h" // 如果你用的是 Lua 5.4，可能需要 #include <lua.h> 等
 }
 // 1. 为每个要暴露给 Lua 的函数编写一个包装函数
 // 这些包装函数负责从 Lua 栈中获取参数，并压入返回值
@@ -36,7 +37,8 @@ static const luaL_Reg cpumem_lib[] = {
 
 // 3. 定义模块入口函数
 // 函数名必须是 luaopen_ + 你的模块名。假设你的模块名为 "cpumem"
-extern "C" int luaopen_cpumem_monitor(lua_State *L) {
+extern "C" int luaopen_cpumem_monitor(void *tmp_L) {
+  lua_State *L = (lua_State *)tmp_L;
   luaL_newlib(L, cpumem_lib); // Lua 5.2+ 创建新表并注册函数
   return 1;                   // 返回这个表
 }

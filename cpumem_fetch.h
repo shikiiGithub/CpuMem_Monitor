@@ -21,11 +21,10 @@
 #endif
 
 extern "C" {
-#include "/home/shikii/下载/lua-5.4.1/lua.h" // 如果你用的是 Lua 5.4，可能需要 #include <lua.h> 等
 #include <assert.h>
 
 LIBX_EXPORT double GetCPUUsage();
 LIBX_EXPORT double GetMemUsage();
-LIBX_EXPORT void InitCpuAnalysisWorker();
-LIBX_EXPORT int luaopen_cpumem(lua_State *L);
+LIBX_EXPORT void *InitCpuAnalysisWorker();
+LIBX_EXPORT int luaopen_cpumem(void *L);
 }

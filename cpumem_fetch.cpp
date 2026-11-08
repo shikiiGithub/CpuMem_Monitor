@@ -39,9 +39,8 @@ double GetCPUUsage() {
   }
   return v;
 }
-void InitCpuAnalysisWorker() {
-  std::thread runner;
-  std::thread th([&]() {
+void *InitCpuAnalysisWorker() {
+  auto pTh = new std::thread([&]() {
     while (true) {
       std::this_thread::sleep_for(std::chrono::milliseconds(1000));
       {
@@ -51,6 +50,5 @@ void InitCpuAnalysisWorker() {
       }
     }
   });
-  th.join();
-  runner.join();
+  return pTh;
 }
