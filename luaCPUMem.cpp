@@ -1,8 +1,8 @@
 // luacpumem.cpp
-#include "./cpumem_fetch.h" // 包含你原有的导出函数声明
+#include "./cpumem_fetch.h"
 extern "C" {
 #include "lua_include/lauxlib.h"
-#include "lua_include/lua.h" // 如果你用的是 Lua 5.4，可能需要 #include <lua.h> 等
+#include "lua_include/lua.h"
 }
 // 1. 为每个要暴露给 Lua 的函数编写一个包装函数
 // 这些包装函数负责从 Lua 栈中获取参数，并压入返回值
