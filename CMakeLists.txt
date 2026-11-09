@@ -16,13 +16,20 @@ add_library(${PROJECT_NAME} SHARED cpumem_monitor.h cpumem_monitor.cpp cpumem_fe
 add_executable(${forWezterm} cpumem_monitor.h cpumem_monitor.cpp cpumem_fetch.cpp main.cpp )
 # 根据平台定义宏
 if (WIN32)
+    target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)
     target_compile_definitions(${PROJECT_NAME} PRIVATE LIBX_EXPORTS)
+    target_link_libraries(${forWezterm}  PRIVATE pdh 
+    )
+   
+    target_link_libraries(${PROJECT_NAME}  PRIVATE pdh
+     ${CMAKE_CURRENT_SOURCE_DIR}/lua_static.lib
+    )
+
 else()
     # 添加 -fPIC 编译选项
    # set(CMAKE_POSITION_INDEPENDENT_CODE ON)
     set_property(TARGET ${PROJECT_NAME} PROPERTY  POSITION_INDEPENDENT_CODE ON) #相当于指定-fPIC编译选项    
     
-    # target_link_libraries( ${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/liblua.a )
 endif()
 
 install (TARGETS ${PROJECT_NAME}  

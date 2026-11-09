@@ -6,7 +6,7 @@
 #include <string.h>
 #include <string>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <pdh.h>
 #include <psapi.h>
 #include <tchar.h>

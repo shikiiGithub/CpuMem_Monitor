@@ -26,5 +26,5 @@ extern "C" {
 LIBX_EXPORT double GetCPUUsage();
 LIBX_EXPORT double GetMemUsage();
 LIBX_EXPORT void *InitCpuAnalysisWorker();
-LIBX_EXPORT int luaopen_cpumem(void *L);
+LIBX_EXPORT int luaopen_cpumem_monitor(void *L);
 }
